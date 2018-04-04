@@ -102,7 +102,7 @@
 
 <property>
   <name>http.robots.agents</name>
-  <value>psu-ist_team8</value>
+  <value>PSU_IST441-8</value>
   <description>Any other agents, apart from 'http.agent.name', that the robots
   parser would look for in robots.txt. Multiple agents can be provided using
   comma as a delimiter. eg. mybot,foo-spider,bar-crawler
@@ -137,7 +137,7 @@
 
 <property>
   <name>http.agent.description</name>
-  <value></value>
+  <value>IR Crawler for PSU IST 441 Project</value>
   <description>Further description of our bot- this text is used in
   the User-Agent header.  It appears in parenthesis after the agent name.
   </description>
@@ -145,7 +145,7 @@
 
 <property>
   <name>http.agent.url</name>
-  <value></value>
+  <value>http://clgiles.ist.psu.edu/IST441/</value>
   <description>A URL to advertise in the User-Agent header.  This will
    appear in parenthesis after the agent name. Custom dictates that this
    should be a URL of a page explaining the purpose and behavior of this
@@ -155,7 +155,7 @@
 
 <property>
   <name>http.agent.email</name>
-  <value></value>
+  <value>yjo5006@psu.edu</value>
   <description>An email address to advertise in the HTTP 'From' request
    header and User-Agent header. A good practice is to mangle this
    address (e.g. 'info at example dot com') to avoid spamming.
@@ -885,7 +885,7 @@
 
 <property>
   <name>fetcher.threads.per.queue</name>
-  <value>1</value>
+  <value>5</value>
   <description>This number is the maximum number of threads that
     should be allowed to access a queue at one time. Setting it to
     a value > 1 will cause the Crawl-Delay value from robots.txt to
@@ -911,7 +911,7 @@
 
 <property>
   <name>fetcher.parse</name>
-  <value>false</value>
+  <value>true</value>
   <description>If true, fetcher will parse content. Default is false, which means
   that a separate parsing step is required after fetching is finished.</description>
 </property>
@@ -987,7 +987,7 @@
 
 <property>
   <name>fetcher.follow.outlinks.depth</name>
-  <value>-1</value>
+  <value>10</value>
   <description>(EXPERT)When fetcher.parse is true and this value is greater than 0 the fetcher will extract outlinks
   and follow until the desired depth is reached. A value of 1 means all generated pages are fetched and their first degree
   outlinks are fetched and parsed too. Be careful, this feature is in itself agnostic of the state of the CrawlDB and does not
@@ -1000,7 +1000,7 @@
 
 <property>
   <name>fetcher.follow.outlinks.num.links</name>
-  <value>4</value>
+  <value>8</value>
   <description>(EXPERT)The number of outlinks to follow when fetcher.follow.outlinks.depth is enabled. Be careful, this can multiply
   the total number of pages to fetch. This works with fetcher.follow.outlinks.depth.divisor, by default settings the followed outlinks
   at depth 1 is 8, not 4.
@@ -1009,7 +1009,7 @@
 
 <property>
   <name>fetcher.follow.outlinks.depth.divisor</name>
-  <value>2</value>
+  <value>10</value>
   <description>(EXPERT)The divisor of fetcher.follow.outlinks.num.links per fetcher.follow.outlinks.depth. This decreases the number
   of outlinks to follow by increasing depth. The formula used is: outlinks = floor(divisor / depth * num.links). This prevents
   exponential growth of the fetch list.
