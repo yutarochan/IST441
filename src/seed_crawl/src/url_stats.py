@@ -33,6 +33,8 @@ print()
 baseurl_dist = collections.Counter(list(map(lambda x: tldextract.extract(x.netloc).domain, parsed_url)))
 baseurl_hist = [baseurl_dist[x] for x in sorted(dict(baseurl_dist), reverse=True, key=baseurl_dist.__getitem__)]
 
+print(baseurl_hist)
+
 # Plot Distribution
 plt.hist(baseurl_hist, log=True, bins=25)
 plt.title('Seed URL Domain Frequency')
