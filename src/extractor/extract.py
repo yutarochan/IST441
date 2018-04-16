@@ -4,7 +4,9 @@ Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 from __future__ import print_function
 import os
+import re
 import uuid
+import json
 import magic
 import shutil
 # import textract
@@ -17,6 +19,7 @@ from multiprocessing import Pool
 # Application Paraemeters
 ROOT_DIR = '/tmp/oer_rawtext/'
 DESC_LEN = 250
+THREADS = 256
 
 class ContentExtract:
     def __init__(self, tmp_dir='./exttmp', min_density=0.1):
@@ -43,6 +46,7 @@ class ContentExtract:
 
             # Return Content Based on Text Density Ratio
             if len(content) == 0 or len(soup.text) == 0:
+                print('blank')
                 return None
             elif self.min_density < (len(soup.text) / len(content)):
                 return soup.text
@@ -90,14 +94,40 @@ class ContentExtract:
         # Content Description
         desc = ' '.join(re.sub(r'\s+', ' ', soup.text.strip()))
         if len(desc) < DESC_LEN: meta['desc'] = desc
-        else meta['desc'] = desc[:DESC_LEN]
+        else: meta['desc'] = desc[:DESC_LEN]
 
         return meta
 
 if __name__  == '__main__':
     # Load File Map List
-    data = open('rawdata_fmap.txt', 'r').read().split('\n')[:-1]
-    print(data[3])
+    data = open('rawdata_fmap.txt', 'r').read().split('\n')
 
+    # Initialize Content Extraction Module
     ext = ContentExtract()
-    ext.extract_meta(data[3])
+    meta_list = []
+
+    def f(path):
+        print('Processing: ' + path)
+
+        # Extract Text Information
+        data = ext.process(path)
+        if data is None or len(data) == 0: return
+
+        # Extract Meta Data
+        meta = ext.extract_meta(path)
+        meta_list.append(meta)
+        
+        # Output Contents
+        out = open(ROOT_DIR + meta['uuid'] + '.txt', 'w')
+        out.write(data)
+        out.close()
+
+    # Multiprocessing Handler
+    p = Pool(THREADS)
+    p.map(f, data)
+    p.close()
+
+    # Write Metadata
+    meta_out = open('oer_metadata.json', 'w')
+    meta_out.write(json.dumps(meta_list))
+    meta_out.close()
