@@ -24,8 +24,9 @@ stemmer = SnowballStemmer("english")
 np.random.seed(2342234)
 
 # Preprocessing Function
+# TODO: Fix the preprocessing phase based on the structure of the json
 def process(doc):
-    text = open('doc')
+    text = open(doc[], )
     tokens = [stemmer.stem(t.lower()) for t in nltk.word_tokenize(text.translate(None, string.punctuation)) if t.lower() not in stopwords]
     return LabeledDocs(tokens, doc_id)
 
