@@ -7,13 +7,14 @@ import os
 import uuid
 import magic
 import shutil
-import textract
+# import textract
 import subprocess as sp
 from bs4 import BeautifulSoup
 from boilerpipy import Extractor
+from multiprocessing import Pool
 
 # Application Paraemeters
-ROOT_DIR = ''
+ROOT_DIR = '/tmp/oer_rawtext/'
 
 class ContentExtract:
     def __init__(self, tmp_dir='./exttmp', min_density=0.1):
@@ -45,6 +46,7 @@ class ContentExtract:
                 return soup.text
             else:
                 return None
+        '''
         elif type == 'application/pdf':
             tmp_file = self.tmp_dir + '/' + str(uuid.uuid4()) + '.txt'
             print(self.tmp_dir + '/' + tmp_file)
@@ -60,7 +62,13 @@ class ContentExtract:
             return open(fle_dir, 'rb').read()
         elif type == 'text/rtf':
             return textract.process(file_dir)
+        '''
+
+    def extract_meta(self, file_dir):
+        meta = dict()
+        meta['uuid'] = str(uuid.uuid4())
 
 if __name__  == '__main__':
+
     ext = ContentExtract()
     print(ext.process('test.html'))
