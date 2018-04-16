@@ -9,12 +9,14 @@ import magic
 import shutil
 # import textract
 import subprocess as sp
+from bs4 import Comment
 from bs4 import BeautifulSoup
 from boilerpipy import Extractor
 from multiprocessing import Pool
 
 # Application Paraemeters
 ROOT_DIR = '/tmp/oer_rawtext/'
+DESC_LEN = 250
 
 class ContentExtract:
     def __init__(self, tmp_dir='./exttmp', min_density=0.1):
@@ -65,10 +67,37 @@ class ContentExtract:
         '''
 
     def extract_meta(self, file_dir):
+        # Setup Metadata Dictionary
         meta = dict()
         meta['uuid'] = str(uuid.uuid4())
 
+        # Extract HTML Content
+        content = open(file_dir, 'rb').read()
+        if len(content) == 0: return        
+        soup = BeautifulSoup(content, 'html.parser')
+
+        # Page URL
+        comments = soup.find_all(string = lambda text : isinstance(text, Comment))
+        for c in comments:
+            if ' Mirrored from' in c:
+                meta['url'] = c.split(' ')[3]
+                break
+
+        # Document Title
+        if soup.title: meta['title'] = soup.title.text
+        else: meta['title'] = meta['url']
+
+        # Content Description
+        desc = ' '.join(re.sub(r'\s+', ' ', soup.text.strip()))
+        if len(desc) < DESC_LEN: meta['desc'] = desc
+        else meta['desc'] = desc[:DESC_LEN]
+
+        return meta
+
 if __name__  == '__main__':
+    # Load File Map List
+    data = open('rawdata_fmap.txt', 'r').read().split('\n')[:-1]
+    print(data[3])
 
     ext = ContentExtract()
-    print(ext.process('test.html'))
+    ext.extract_meta(data[3])
