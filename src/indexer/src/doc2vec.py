@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 
 # Application Parameters
+DATAROOT_DIR = '/tmp/oer_rawtext/'
 THREADS = 32
 
 # Initialize NLTK Objects
@@ -24,9 +25,9 @@ np.random.seed(2342234)
 
 # Preprocessing Function
 # TODO: Fix the preprocessing phase based on the structure of the json
-def process(doc):
-    # text = open(doc[], )
-    tokens = [stemmer.stem(t.lower()) for t in nltk.word_tokenize(text.translate(None, string.punctuation)) if t.lower() not in stopwords]
+def process(doc_id):
+    text = open(DATAROOT_DIR + doc_id + '.txt', 'r').read()
+    tokens = [stemmer.stem(t.lower()) for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
     return LabeledDocs(tokens, doc_id)
 
 # Document Object
@@ -55,9 +56,11 @@ class DocList(object):
         return len(self.docs)
 
 # Open Metadata File
-meta = json.loads(open('oer_metadata.json', 'rb').read())
-print(meta[1])
+print('LOADING DOCUMENT METADATA')
+meta = json.loads(open('oer_metadata_redux.json', 'rb').read())
+print('LOADED: ' + str(len(meta.keys())))
 
 # Process Documents
-# p = Pool(150)
-# documents = DocList(p.map(process, metadata))
+p = Pool(150)
+documents = DocList(p.map(process, list(meta.keys())[:10]))
+# print(list(meta.keys())[:5])

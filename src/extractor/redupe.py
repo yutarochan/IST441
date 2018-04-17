@@ -27,5 +27,8 @@ for url in url_map:
     if len(url_map[url]) > 1:
         for uuid in url_map[url][1:]: del uuid_map[uuid]
 
-print(len(uuid_map.keys()))
+# Output Generate Finalized File Map
+output = open('oer_metadata_redux.json', 'w')
+output.write(json.dumps(uuid_map))
+output.close()
 
