@@ -1,5 +1,5 @@
 '''
-Text Preprocessing Routine
+Document Embedding - Training Routine
 Author: Yuya Jeremy Ong (yjo5006@psu.edu)
 '''
 from __future__ import print_function
@@ -26,7 +26,7 @@ THREADS = 128
 VEC_DIM = 450
 EPOCH = 50
 WINDOW = 8
-MIN_COUNT = 3 
+MIN_COUNT = 3
 
 # Initialize NLTK Objects
 stopwords = set(stopwords.words('english'))
