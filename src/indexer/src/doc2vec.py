@@ -15,7 +15,6 @@ from nltk.stem.snowball import SnowballStemmer
 # Application Parameters
 THREADS = 32
 
-
 # Initialize NLTK Objects
 stopwords = set(stopwords.words('english'))
 stemmer = SnowballStemmer("english")
@@ -59,5 +58,5 @@ class DocList(object):
 metadata = json.loads(open('oer_metadata.json', 'rb').read())
 
 # Process Documents
-p = Pool(150)
-documents = DocList(p.map(process, metadata))
+# p = Pool(150)
+# documents = DocList(p.map(process, metadata))

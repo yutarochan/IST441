@@ -41,12 +41,12 @@ class ContentExtract:
 
         if type == 'text/html':
             # Extract Text Content
-            content = open(file_dir, 'rb').read()
-            soup = BeautifulSoup(Extractor(content).extracted(), 'html.parser')
+            content = Extractor(open(file_dir, 'rb').read()).extracted()
+            if content == None: return None
+            soup = BeautifulSoup(content, 'html.parser')
 
             # Return Content Based on Text Density Ratio
             if len(content) == 0 or len(soup.text) == 0:
-                print('blank')
                 return None
             elif self.min_density < (len(soup.text) / len(content)):
                 return soup.text
@@ -77,7 +77,8 @@ class ContentExtract:
 
         # Extract HTML Content
         content = open(file_dir, 'rb').read()
-        if len(content) == 0: return        
+        if len(content) is 0: return
+
         soup = BeautifulSoup(content, 'html.parser')
 
         # Page URL
@@ -89,25 +90,21 @@ class ContentExtract:
 
         # Document Title
         if soup.title: meta['title'] = soup.title.text
-        else: meta['title'] = meta['url']
-
-        # Content Description
-        desc = ' '.join(re.sub(r'\s+', ' ', soup.text.strip()))
-        if len(desc) < DESC_LEN: meta['desc'] = desc
-        else: meta['desc'] = desc[:DESC_LEN]
+        elif 'url' in meta: meta['title'] = meta['url']
+        else: meta['title'] = ''
 
         return meta
 
 if __name__  == '__main__':
     # Load File Map List
-    data = open('rawdata_fmap.txt', 'r').read().split('\n')
+    data = open('rawdata_fmap.txt', 'r').read().split('\n')[:-1]
 
     # Initialize Content Extraction Module
     ext = ContentExtract()
     meta_list = []
 
     def f(path):
-        print('Processing: ' + path)
+        print('PROCESSING: ' + path)
 
         # Extract Text Information
         data = ext.process(path)
@@ -115,17 +112,22 @@ if __name__  == '__main__':
 
         # Extract Meta Data
         meta = ext.extract_meta(path)
-        meta_list.append(meta)
-        
+
         # Output Contents
         out = open(ROOT_DIR + meta['uuid'] + '.txt', 'w')
         out.write(data)
         out.close()
 
+        # Return Metadata as Output
+        return meta
+
     # Multiprocessing Handler
     p = Pool(THREADS)
-    p.map(f, data)
+    meta_list = p.map(f, data)
     p.close()
+    
+    # list(map(f, data))
+    print(meta_list)
 
     # Write Metadata
     meta_out = open('oer_metadata.json', 'w')
