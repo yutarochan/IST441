@@ -23,8 +23,9 @@ DATAROOT_DIR = '/tmp/oer_rawtext/'
 THREADS = 128
 
 # Document Embedding Hyperparameters
-VEC_DIM = 450
-EPOCH = 50
+VEC_DIM = 350
+OUTER_EPOCH = 15
+INNER_EPOCH = 50
 WINDOW = 8
 MIN_COUNT = 3
 
@@ -78,16 +79,15 @@ p = Pool(THREADS)
 documents = DocList(p.map(process, list(meta.keys())))
 
 # Train Document Vectors
-model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = EPOCH, workers = THREADS)
+model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = INNER_EPOCH, workers = THREADS)
 model.build_vocab(documents.toArray())
 
 print('TRAINING DOCUMENT EMBEDDING')
-# Shuffle Documents
 train_docs = documents.toArray()
-random.shuffle(train_docs)
+for i in range(OUTER_EPOCH):
+    random.shuffle(train_docs)
+    model.train(train_docs, total_examples=model.corpus_count, epochs=model.epochs)
 
-# Train Model
-model.train(train_docs, total_examples=model.corpus_count, epochs=model.epochs)
 print('TRAIN COMPLETE')
 
 # Persist Model

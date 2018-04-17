@@ -4,4 +4,7 @@
 test*
 output.txt
 
+*.npy
+*.pickle
+
 data/
