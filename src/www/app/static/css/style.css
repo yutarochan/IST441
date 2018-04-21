@@ -1,0 +1,28 @@
+.logo {
+    width: 25%;
+    padding-top: 120px;
+    padding-bottom: 50px;
+}
+
+.footer {
+    padding-top: 15px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.bar {
+    padding-left: 0.1em !important;
+}
+
+.search_bar {
+    margin-bottom: 25px !important;
+}
+
+.search_btn {
+    margin-top: 30px;
+}
+
+.result_header {
+    margin: 0 !important;
+    padding-bottom: 0px !important;
+}

@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>OER Commons Search Engine</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<!-- Stylesheets -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+	<link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="card-panel blue-grey lighten-5 result_header">
+        <div class="container">
+            <div class="row">
+                <div class="col s2"><center><a href="/"><img src="/static/img/logo.png" height="50"></a></center></div>
+                <div class="col s6">
+                    <form class="col s12" action="/query">
+                        <input id="query" name="q" type="text" class="validate" value="{{ q }}">
+    	  			</form>
+                </div>
+                <div class="col s1"><button class="btn waves-effect waves-light" type="submit" style="margin-top: 10px; margin-left: 20px;">Search</button></div>
+            </div>
+        </div>
+	</div>
+
+    <div class="container" style="padding-left: 60px;">
+        <p style="color:gray">About XXX results (XXX seconds)</p><br />
+    </div>
+
+	<!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <script>
+        $('#query').val();
+    </script>
+</body>
+
+</html>
