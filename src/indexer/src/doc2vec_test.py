@@ -23,7 +23,7 @@ print('LOADED: ' + str(len(meta.keys())))
 model = Doc2Vec.load('oer_d2v.pickle')
 
 def preprocess(text):
-    return [stemmer.stem(t.lower()) for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
+    return [t.lower() for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
 
 def query(keywords, n=20):
     # Preprocess Query
@@ -33,9 +33,11 @@ def query(keywords, n=20):
     # Perform Search
     results = model.docvecs.most_similar([new_vector], topn=n)
 
+    print(results)
+    
     # Extract and Map to Metadata
     res_set = [meta[r[0]] for r in results]
 
     return res_set
 
-print(query('artificial intelligence'))
+print(query('japanese economy'))

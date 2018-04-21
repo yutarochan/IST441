@@ -20,14 +20,14 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 # Application Parameters
 DATAROOT_DIR = '/tmp/oer_rawtext/'
-THREADS = 128
+THREADS = 256
 
 # Document Embedding Hyperparameters
-VEC_DIM = 350
-OUTER_EPOCH = 15
-INNER_EPOCH = 50
+VEC_DIM = 300
+OUTER_EPOCH = 100
+INNER_EPOCH = 1
 WINDOW = 8
-MIN_COUNT = 3
+MIN_COUNT = 5
 
 # Initialize NLTK Objects
 stopwords = set(stopwords.words('english'))
@@ -40,7 +40,7 @@ np.random.seed(2342234)
 # TODO: Fix the preprocessing phase based on the structure of the json
 def process(doc_id):
     text = open(DATAROOT_DIR + doc_id + '.txt', 'r').read()
-    tokens = [stemmer.stem(t.lower()) for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
+    tokens = [t.lower() for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
     return LabeledDocs(tokens, doc_id)
 
 # Document Object
@@ -79,12 +79,13 @@ p = Pool(THREADS)
 documents = DocList(p.map(process, list(meta.keys())))
 
 # Train Document Vectors
-model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = INNER_EPOCH, workers = THREADS)
+model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = INNER_EPOCH, workers = THREADS, dm=1)
 model.build_vocab(documents.toArray())
 
 print('TRAINING DOCUMENT EMBEDDING')
 train_docs = documents.toArray()
 for i in range(OUTER_EPOCH):
+    print('EPOCH: ' + str(i))
     random.shuffle(train_docs)
     model.train(train_docs, total_examples=model.corpus_count, epochs=model.epochs)
 
