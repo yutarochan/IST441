@@ -3,12 +3,16 @@
 Python Aplication Template
 Licence: GPLv3
 """
-
 from flask import render_template, request, redirect
-# from flask.ext.login import login_user, logout_user, current_user, login_required
-# from forms import ExampleForm, LoginForm
-# from models import User
+import time
 from app import app
+from app import oer
+
+# Application Parameters
+MODEL_ROOT = 'app/model/'
+MODEL_DIR = MODEL_ROOT + 'oer_.pickle'
+
+SIM_THRESH = 0.25
 
 @app.route('/')
 def index():
@@ -17,9 +21,17 @@ def index():
 @app.route('/query')
 def query_result():
 	# Extract Query from GET
-	query = request.args.get('q')
-
+	text = request.args.get('q')
+	
 	# Redirect if Empty Query
-	if query is None or len(query) == 0: return redirect('/')
+	if text is None or len(text) == 0: return redirect('/')
 
-	return render_template('result.html', q=query)
+	# Perform Search Query
+	start = time.time() 
+	result = oer.query(text, 109650, SIM_THRESH)
+	end = time.time()
+
+	# Compute Query Walltime
+	walltime = end - start
+
+	return render_template('result.html', q=text, res=result, w_time=walltime, count=len(result))

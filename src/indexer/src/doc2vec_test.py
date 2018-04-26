@@ -20,7 +20,7 @@ meta = json.loads(open('oer_metadata_redux.json', 'rb').read())
 print('LOADED: ' + str(len(meta.keys())))
 
 # Load model
-model = Doc2Vec.load('oer_d2v.pickle')
+model = Doc2Vec.load('models/d2v_v2/oer_d2v.pickle')
 
 def preprocess(text):
     return [t.lower() for t in nltk.word_tokenize(text) if t.lower() not in stopwords and t.lower() not in string.punctuation]
@@ -40,4 +40,4 @@ def query(keywords, n=20):
 
     return res_set
 
-print(query('japanese economy'))
+print(query('japanese war'))

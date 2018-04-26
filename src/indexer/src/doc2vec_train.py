@@ -23,8 +23,8 @@ DATAROOT_DIR = '/tmp/oer_rawtext/'
 THREADS = 256
 
 # Document Embedding Hyperparameters
-VEC_DIM = 300
-OUTER_EPOCH = 100
+VEC_DIM = 1024
+OUTER_EPOCH = 50
 INNER_EPOCH = 1
 WINDOW = 8
 MIN_COUNT = 5
@@ -79,8 +79,10 @@ p = Pool(THREADS)
 documents = DocList(p.map(process, list(meta.keys())))
 
 # Train Document Vectors
-model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = INNER_EPOCH, workers = THREADS, dm=1)
-model.build_vocab(documents.toArray())
+# model = Doc2Vec(vector_size = VEC_DIM, min_count = MIN_COUNT, epochs = INNER_EPOCH, workers = THREADS, dm=1)
+# model.build_vocab(documents.toArray())
+
+model = Doc2Vec.load('oer_d2v.pickle')
 
 print('TRAINING DOCUMENT EMBEDDING')
 train_docs = documents.toArray()
@@ -88,6 +90,11 @@ for i in range(OUTER_EPOCH):
     print('EPOCH: ' + str(i))
     random.shuffle(train_docs)
     model.train(train_docs, total_examples=model.corpus_count, epochs=model.epochs)
+
+    if i % 50 == 0:
+        print('>> SAVE INTERMEDIATE WEIGHTS!!')
+        model.save('oer_d2v.pickle')
+
 
 print('TRAIN COMPLETE')
 
